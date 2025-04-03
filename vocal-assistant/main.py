@@ -5,19 +5,15 @@ from todo_manager import TodoManager
 
 
 class MainApp:
-    def __init__(self) -> None:
-        """Initialize the MainApp with necessary components."""
+  def __init__(self):
         self.command_processor = CommandProcessing()
         self.openai_agent = OpenAIAgent()
         self.speech_processor = SpeechProcessing()
         self.todo_manager = TodoManager()
 
-    def run(self) -> None:
-        """Run the main loop to listen for voice commands."""
-        while True:
-            command = self.speech_processor.listen()
-            # Process the command here if needed
-
+  def run(self):
+      while True:
+          command = self.speech_processor.listen()
 
 if __name__ == "__main__":
     app = MainApp()

@@ -6,8 +6,22 @@ class SpeechProcessing:
 
     def listen(self):
         with sr.Microphone() as source:
+            self.recognizer.adjust_for_ambient_noise(source, duration=1)
             print("Listening...")
-            audio = self.recognizer.listen(source)
+            audio = None
+            try:
+                audio = self.recognizer.listen(source, timeout=5)
+            except sr.WaitTimeoutError:
+                print("Listening timed out while waiting for phrase to start")
+                return ""
+            except Exception as e:
+                print(f"An error occurred while listening: {e}")
+                return ""
+            if audio is None:
+                print("No audio received")
+                return ""
+            print("Processing audio...")
+            audio = self.recognizer.listen(source, timeout=5)
             text = ""
 
             try:
