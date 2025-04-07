@@ -1,10 +1,10 @@
 import openai
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from openai.error import RateLimitError
 
-# Load environment variables from .env file
 load_dotenv()
-# Set OpenAI API key
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class OpenAIAgent:
@@ -12,14 +12,14 @@ class OpenAIAgent:
         self.model = model
 
     def get_response(self, command):
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": "You are a vocal assistant. You have to answer in simple, efficient and concise manner. Your answer should not take nore than 30 seconds to say out loud."},
-                {"role": "user", "content": command},
-            ],
-        )
-
-        assistant_response = response['choices'][0]['message']['content']
-
-        return assistant_response
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "You are a vocal assistant. You have to answer in simple, efficient and concise manner. Your answer should not take more than 30 seconds to say out loud."},
+                    {"role": "user", "content": command},
+                ]
+            )
+            return response['choices'][0]['message']['content']
+        except RateLimitError:
+            return "I'm currently unable to process your request due to API limits. Please try again later."
